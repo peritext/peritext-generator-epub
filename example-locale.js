@@ -1,0 +1,17 @@
+module.exports = {
+  untitledStory: 'Récit sans titre',
+  untitledSection: 'Section sans titre',
+  otherFormats: 'Autres formats',
+  references: 'Références',
+  tableOfContents: 'Sommaire',
+  tablOfFigures: 'Table des figures',
+  authorsIndex: 'Index des auteurs',
+  glossary: 'Glossaire',
+  pdfFormat: 'Format pdf',
+  epubFormat: 'Format epub',
+  jsonFormat: 'Format JSON',
+  download: 'télécharger',
+  prevPage: 'page précédente',
+  nextPage: 'page suivante',
+  of: 'de',
+}
