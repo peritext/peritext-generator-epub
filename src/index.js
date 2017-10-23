@@ -213,6 +213,7 @@ function generateEpub ({
     css,
     cover: coverImagePath,
     content,
+    appendChapterTitles: false,
   }
   console.log('ready to generate the epub', `${outputDirPath}/${id}.epub`);
   return new Epub(epub, `${outputDirPath}/${id}.epub`).promise

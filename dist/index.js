@@ -229,7 +229,8 @@ function generateEpub(_ref6, callback) {
     }).join(', '),
     css: css,
     cover: coverImagePath,
-    content: content
+    content: content,
+    appendChapterTitles: false
   };
   console.log('ready to generate the epub', outputDirPath + '/' + id + '.epub');
   return new _epubGen2.default(epub, outputDirPath + '/' + id + '.epub').promise.then(function () {
