@@ -4,6 +4,7 @@ const generateEpub = require('./dist/index');
 const template = require('peritext-template-codex-garlic');
 const templateCss = readFileSync('node_modules/peritext-template-codex-garlic/dist/main.css')
 const story = require('./examples/story');
+const linksStory = require('./examples/links');
 const exampleLocale = require('./example-locale');
 
 const contextualizers = {
@@ -23,6 +24,19 @@ const contextualizers = {
 
 generateEpub({
   story: story,
+  contextualizers,
+  template: template,
+  locale: exampleLocale,
+  additionalStylesheets: [
+    templateCss
+  ],
+  tempDirPath: path.resolve(__dirname + '/temp'),
+  outputDirPath: path.resolve(__dirname + '/examples')
+});
+
+
+generateEpub({
+  story: linksStory,
   contextualizers,
   template: template,
   locale: exampleLocale,

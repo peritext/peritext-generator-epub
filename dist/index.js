@@ -53,13 +53,29 @@ var MentionComponent = function MentionComponent(_ref) {
   );
 };
 
-var LinkComponent = function LinkComponent(_ref2) {
-  var href = _ref2.href,
-      target = _ref2.target,
+var SectionLinkComponent = function SectionLinkComponent(_ref2) {
+  var target = _ref2.target,
       children = _ref2.children,
       _ref2$sectionId = _ref2.sectionId,
       sectionId = _ref2$sectionId === undefined ? '' : _ref2$sectionId,
-      props = (0, _objectWithoutProperties3.default)(_ref2, ['href', 'target', 'children', 'sectionId']);
+      props = (0, _objectWithoutProperties3.default)(_ref2, ['target', 'children', 'sectionId']);
+
+  var finalHref = sectionId + '.xhtml';
+  return _react2.default.createElement(
+    'a',
+    { href: finalHref },
+    children,
+    '*'
+  );
+};
+
+var LinkComponent = function LinkComponent(_ref3) {
+  var href = _ref3.href,
+      target = _ref3.target,
+      children = _ref3.children,
+      _ref3$sectionId = _ref3.sectionId,
+      sectionId = _ref3$sectionId === undefined ? '' : _ref3$sectionId,
+      props = (0, _objectWithoutProperties3.default)(_ref3, ['href', 'target', 'children', 'sectionId']);
 
   var finalHref = sectionId + '.xhtml' + href;
   return _react2.default.createElement(
@@ -69,11 +85,11 @@ var LinkComponent = function LinkComponent(_ref2) {
   );
 };
 
-var ReferenceLink = function ReferenceLink(_ref3) {
-  var href = _ref3.href,
-      target = _ref3.target,
-      children = _ref3.children,
-      props = (0, _objectWithoutProperties3.default)(_ref3, ['href', 'target', 'children']);
+var ReferenceLink = function ReferenceLink(_ref4) {
+  var href = _ref4.href,
+      target = _ref4.target,
+      children = _ref4.children,
+      props = (0, _objectWithoutProperties3.default)(_ref4, ['href', 'target', 'children']);
 
   var finalHref = 'references.xhtml' + href;
   return _react2.default.createElement(
@@ -83,11 +99,11 @@ var ReferenceLink = function ReferenceLink(_ref3) {
   );
 };
 
-var GlossaryLink = function GlossaryLink(_ref4) {
-  var href = _ref4.href,
-      target = _ref4.target,
-      children = _ref4.children,
-      props = (0, _objectWithoutProperties3.default)(_ref4, ['href', 'target', 'children']);
+var GlossaryLink = function GlossaryLink(_ref5) {
+  var href = _ref5.href,
+      target = _ref5.target,
+      children = _ref5.children,
+      props = (0, _objectWithoutProperties3.default)(_ref5, ['href', 'target', 'children']);
 
   var finalHref = 'glossary.xhtml' + href;
   return _react2.default.createElement(
@@ -97,11 +113,11 @@ var GlossaryLink = function GlossaryLink(_ref4) {
   );
 };
 
-var NoteLink = function NoteLink(_ref5) {
-  var href = _ref5.href,
-      target = _ref5.target,
-      children = _ref5.children,
-      props = (0, _objectWithoutProperties3.default)(_ref5, ['href', 'target', 'children']);
+var NoteLink = function NoteLink(_ref6) {
+  var href = _ref6.href,
+      target = _ref6.target,
+      children = _ref6.children,
+      props = (0, _objectWithoutProperties3.default)(_ref6, ['href', 'target', 'children']);
 
   var finalHref = 'notes.xhtml' + href;
   return _react2.default.createElement(
@@ -111,20 +127,19 @@ var NoteLink = function NoteLink(_ref5) {
   );
 };
 
-function generateEpub(_ref6, callback) {
-  var story = _ref6.story,
-      template = _ref6.template,
-      _ref6$contextualizers = _ref6.contextualizers,
-      contextualizers = _ref6$contextualizers === undefined ? {} : _ref6$contextualizers,
-      locale = _ref6.locale,
-      _ref6$outputDirPath = _ref6.outputDirPath,
-      outputDirPath = _ref6$outputDirPath === undefined ? './output' : _ref6$outputDirPath,
-      _ref6$tempDirPath = _ref6.tempDirPath,
-      tempDirPath = _ref6$tempDirPath === undefined ? './temp' : _ref6$tempDirPath,
-      _ref6$additionalStyle = _ref6.additionalStylesheets,
-      additionalStylesheets = _ref6$additionalStyle === undefined ? [] : _ref6$additionalStyle;
+function generateEpub(_ref7, callback) {
+  var story = _ref7.story,
+      template = _ref7.template,
+      _ref7$contextualizers = _ref7.contextualizers,
+      contextualizers = _ref7$contextualizers === undefined ? {} : _ref7$contextualizers,
+      locale = _ref7.locale,
+      _ref7$outputDirPath = _ref7.outputDirPath,
+      outputDirPath = _ref7$outputDirPath === undefined ? './output' : _ref7$outputDirPath,
+      _ref7$tempDirPath = _ref7.tempDirPath,
+      tempDirPath = _ref7$tempDirPath === undefined ? './temp' : _ref7$tempDirPath,
+      _ref7$additionalStyle = _ref7.additionalStylesheets,
+      additionalStylesheets = _ref7$additionalStyle === undefined ? [] : _ref7$additionalStyle;
 
-  console.log('generating epub for story', story.id);
   var id = story.id;
   var DecoratedSection = template.DecoratedSection,
       References = template.References,
@@ -140,7 +155,15 @@ function generateEpub(_ref6, callback) {
 
   var css = (0, _keys2.default)(contextualizers).reduce(function (result, type) {
     return result + '\n' + (contextualizers[type] ? contextualizers[type].defaultCss : '');
-  }, stylesheet) + '\n' + additionalStylesheets.join('\n') + (story.settings.css.codex || '');
+  }, stylesheet) + '\n' + additionalStylesheets.join('\n');
+
+  var cssUser = story.settings.css.codex.css || '';
+  var cssMode = story.settings.css.codex.mode;
+  if (cssMode === 'replace') {
+    css = cssUser;
+  } else if (cssMode === 'merge') {
+    css = css + '\n\n' + cssUser;
+  }
 
   var coverImagePath = void 0;
   var coverImageCodex = story.metadata.covers && story.metadata.covers.codex;
@@ -168,7 +191,8 @@ function generateEpub(_ref6, callback) {
         MentionComponent: MentionComponent,
         ReferenceLinkComponent: ReferenceLink,
         GlossaryLinkComponent: GlossaryLink,
-        NoteLinkComponent: NoteLink
+        NoteLinkComponent: NoteLink,
+        SectionLinkComponent: SectionLinkComponent
       }))
     };
   })), [
@@ -216,12 +240,12 @@ function generateEpub(_ref6, callback) {
       contextualizers: contextualizers,
       story: story,
       MentionComponent: MentionComponent,
-      LinkComponent: LinkComponent
+      LinkComponent: LinkComponent,
+      SectionLinkComponent: SectionLinkComponent
     }))
   }]).filter(function (part) {
     return part !== undefined;
   });
-
   var epub = {
     title: story.metadata.title,
     author: story.metadata.authors.map(function (author) {

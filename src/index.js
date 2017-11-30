@@ -23,6 +23,20 @@ const MentionComponent = ({
   );
 }
 
+const SectionLinkComponent = ({
+  target,
+  children,
+  sectionId = '',
+  ...props,
+}) => {
+  const finalHref = sectionId + '.xhtml';
+  return (
+    <a href={finalHref}>
+      {children}*
+    </a>
+  );
+};
+
 const LinkComponent = ({
   href,
   target,
@@ -92,7 +106,6 @@ function generateEpub ({
   tempDirPath = './temp',
   additionalStylesheets = [],
 }, callback) {
-  console.log('generating epub for story', story.id);
   const id = story.id;
   const {
     DecoratedSection,
@@ -106,11 +119,18 @@ function generateEpub ({
   // overriding notes positions
   story.settings.options.staticNotesPosition = 'end';
 
-  const css = Object.keys(contextualizers).reduce((result, type) => {
+  let css = Object.keys(contextualizers).reduce((result, type) => {
     return result + '\n' + (contextualizers[type] ? contextualizers[type].defaultCss : '');
   }, stylesheet) + '\n' 
-  + additionalStylesheets.join('\n') 
-  + (story.settings.css.codex || '');
+  + additionalStylesheets.join('\n') ;
+
+  const cssUser = story.settings.css.codex.css || '';
+  const cssMode = story.settings.css.codex.mode;
+  if (cssMode === 'replace') {
+    css = cssUser;
+  } else if (cssMode === 'merge') {
+    css = css + '\n\n' + cssUser;
+  }
 
   let coverImagePath;
   let coverImageCodex = story.metadata.covers && story.metadata.covers.codex;
@@ -142,6 +162,7 @@ function generateEpub ({
                   ReferenceLinkComponent={ReferenceLink}
                   GlossaryLinkComponent={GlossaryLink}
                   NoteLinkComponent={NoteLink}
+                  SectionLinkComponent={SectionLinkComponent}
                 />
                 )
         }
@@ -200,11 +221,11 @@ function generateEpub ({
             story={story} 
             MentionComponent={MentionComponent}
             LinkComponent={LinkComponent}
+            SectionLinkComponent={SectionLinkComponent}
           />
         )
       }
     ].filter(part => part !== undefined);
-
   const epub = {
     title: story.metadata.title,
     author: story.metadata.authors
