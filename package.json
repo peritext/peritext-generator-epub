@@ -1,12 +1,14 @@
 {
   "name": "peritext-generator-epub",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "peritext epub output generator",
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist; mkdir dist; babel src/index.js -o dist/index.js",
-    "example": "npm run build; node example"
+    "example": "npm run build; node example",
+    "add-build": "git add dist"
   },
+  "pre-commit": ["build", "add-build"],
   "author": "Robin de Mourat",
   "license": "ISC",
   "peerDependencies": {
@@ -44,6 +46,7 @@
     "peritext-contextualizer-webpage": "0.0.8",
     "peritext-rendering-utils": "0.0.19",
     "peritext-template-codex-garlic": "0.0.33",
+    "pre-commit": "^1.2.2",
     "raw-loader": "^0.5.1"
   }
 }
